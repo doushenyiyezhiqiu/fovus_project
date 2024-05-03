@@ -8,32 +8,32 @@ export class CdkProjectStack extends Stack {
 
     // S3 bucket configuration
     const bucket = new s3.Bucket(this, 'FileBucket', {
-      removalPolicy: RemovalPolicy.DESTROY,  // Automatically clean up bucket when the stack is destroyed
-      autoDeleteObjects: true,  // Automatically delete objects in the bucket when the bucket is deleted
+      removalPolicy: RemovalPolicy.DESTROY,  
+      autoDeleteObjects: true,  
     });
 
     // DynamoDB table configuration
     const table = new dynamodb.Table(this, 'FileTable', {
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,  // Cost-effective for unpredictable workloads
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,  
     });
 
     // IAM role for Lambda function
     const lambdaRole = new iam.Role(this, 'LambdaExecRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),  // Basic Lambda execution policy
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),  // Full access to S3
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'),  // Full access to DynamoDB
+        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'), 
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),  
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'),  
       ],
     });
 
     // Lambda function configuration
     const handler = new lambda.Function(this, 'Handler', {
-      runtime: lambda.Runtime.NODEJS_20_X,  // Using the latest supported Node.js runtime
-      code: lambda.Code.fromAsset('lambda'),  // Adjust the path to your Lambda code
-      handler: 'handler.handler',  // Your handler file and export name
-      environment: {  // Passing environment variables to the Lambda function
+      runtime: lambda.Runtime.NODEJS_20_X,  
+      code: lambda.Code.fromAsset('lambda'),  
+      handler: 'handler.handler', 
+      environment: {
         BUCKET_NAME: bucket.bucketName,
         TABLE_NAME: table.tableName,
       },
@@ -41,7 +41,7 @@ export class CdkProjectStack extends Stack {
     });
 
     const api = new apigateway.LambdaRestApi(this, 'Api', {
-      handler: handler, // your Lambda function
+      handler: handler, 
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,

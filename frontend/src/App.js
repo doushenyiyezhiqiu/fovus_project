@@ -3,15 +3,15 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 
 function App() {
-  const [fileData, setFileData] = useState(null);  // Stores the file's base64 content, name, and type
+  const [fileData, setFileData] = useState(null);  
   const [inputText, setInputText] = useState('');
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0]; // Get the file object from the input
+    const file = event.target.files[0]; 
     const reader = new FileReader();
 
     reader.onload = (e) => {
-      const base64Content = e.target.result.split(',')[1]; // Remove the prefix
+      const base64Content = e.target.result.split(',')[1]; 
       setFileData({
         name: file.name,
         content: base64Content,
@@ -28,12 +28,12 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const id = nanoid(); // Generate unique ID for the entry
+    const id = nanoid(); 
 
     const data = {
       id: id,
       text: inputText,
-      file: fileData  // Pass the entire file data object
+      file: fileData  
     };
     const url = 'https://f2nnsdvfkj.execute-api.us-east-1.amazonaws.com/prod/';
 
