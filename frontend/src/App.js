@@ -3,11 +3,23 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 
 function App() {
-  const [file, setFile] = useState(null);
+  const [fileData, setFileData] = useState(null);  // Stores the file's base64 content, name, and type
   const [inputText, setInputText] = useState('');
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+    const file = event.target.files[0]; // Get the file object from the input
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const base64Content = e.target.result.split(',')[1]; // Remove the prefix
+      setFileData({
+        name: file.name,
+        content: base64Content,
+        type: file.type
+      });
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const handleInputChange = (event) => {
@@ -18,25 +30,27 @@ function App() {
     event.preventDefault();
     const id = nanoid(); // Generate unique ID for the entry
 
-    // Create an instance of FormData to send the multipart data
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('text', inputText);
-    formData.append('id', id);
+    const data = {
+      id: id,
+      text: inputText,
+      file: fileData  // Pass the entire file data object
+    };
+    const url = 'https://f2nnsdvfkj.execute-api.us-east-1.amazonaws.com/prod/';
 
-    try {
-      const response = await axios.post('https://cors-anywhere.herokuapp.com/https://vtmi8twqzk.execute-api.us-east-1.amazonaws.com/prod/', formData, {
-        headers: {
-          // This content type is required for multipart/form-data
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+    // Make the POST request with JSON payload
+    axios.post(url, data, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
       console.log('Success:', response.data);
       alert('File and text uploaded successfully!');
-    } catch (error) {
+    })
+    .catch(error => {
       console.error('Error uploading file and text:', error);
       alert('Failed to upload!');
-    }
+    });
   };
 
   return (

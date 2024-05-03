@@ -1,4 +1,5 @@
-import { App, Stack, StackProps, aws_s3 as s3, aws_lambda as lambda, aws_apigateway as apigateway, aws_dynamodb as dynamodb, aws_iam as iam, RemovalPolicy } from 'aws-cdk-lib';
+import { App, Stack, StackProps } from 'aws-cdk-lib';
+import { aws_s3 as s3, aws_lambda as lambda, aws_apigateway as apigateway, aws_dynamodb as dynamodb, aws_iam as iam, RemovalPolicy } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export class CdkProjectStack extends Stack {
@@ -39,13 +40,13 @@ export class CdkProjectStack extends Stack {
       role: lambdaRole,
     });
 
-    // Assuming 'handler' is your Lambda function already added to the CDK stack
     const api = new apigateway.LambdaRestApi(this, 'Api', {
-      handler: handler,
+      handler: handler, // your Lambda function
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,
-        allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key'],
+        allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token', 'X-Requested-With'],
+        allowCredentials: true,
       }
     });
 
