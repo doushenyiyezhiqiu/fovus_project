@@ -44,6 +44,9 @@ This command will open a new page in your default web browser. You can then inte
 After setting up the frontend, use it to upload a file and input some data. Verify if the deployment is successful by checking the outputs in your AWS account.
 
 References:
+
 https://aws.amazon.com/cli/
+
 https://dev.to/aws-builders/your-complete-api-gateway-and-cors-guide-11jb
+
 https://stackoverflow.com/questions/35995498/cross-origin-resource-error-no-access-control-allow-origin-header-is-present
